@@ -140,6 +140,7 @@
       </div>
 
       <div class="imgbox">
+        <!-- First Image Box for dsimobo folder -->
         <img id="resultImg" src="dsimobo/1.jpg" alt="dsimobo Image" />
         <div id="status" class="status">Showing: 1.jpg</div>
       </div>
@@ -147,7 +148,7 @@
 
     <section class="middle">
       <div class="imgbox">
-        <!-- New Image Box for FX2 folder -->
+        <!-- Second Image Box for FX2 folder -->
         <img id="resultImgFX2" src="FX2/1.jpg" alt="FX2 Image" />
       </div>
     </section>
@@ -158,21 +159,22 @@
   </div>
 
   <script>
+    // Normalize input search terms
     function norm(s) {
       return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     }
 
-    // Lookup table: normalized_key -> image filename
+    // Lookup table for both dsimobo and FX2 folders
     const lookup = new Map();
 
-    // Function to add image paths for both folders (dsimobo and FX2)
+    // Function to add image paths for both folders
     function add(img, keys) {
       for (const k of keys) lookup.set(norm(k), img);
     }
 
-    // Fixed image paths for both dsimobo and FX2
-    add("dsimobo/kenny.jpg", ["kenny"]);
-    add("FX2/kenny.jpg", ["kenny"]);
+    // Adding images to the lookup table for both folders (dsimobo and FX2)
+    add("dsimobo/1.jpg", [""]);
+    add("FX2/1.jpg", [""]);
 
     // Adding more image mappings for dsimobo and FX2
     add("dsimobo/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
