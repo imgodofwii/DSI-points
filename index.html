@@ -140,6 +140,7 @@
       </div>
 
       <div class="imgbox">
+        <!-- First Image Box for dsimobo folder -->
         <img id="resultImg" src="dsimobo/1.jpg" alt="dsimobo Image" />
         <div id="status" class="status">Showing: 1.jpg</div>
       </div>
@@ -158,30 +159,34 @@
   </div>
 
   <script>
-    // Normalize input search terms
     function norm(s) {
       return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     }
 
     // Lookup table for both dsimobo and FX2 folders
-    const lookup = new Map();
+    const lookupDsimobo = new Map();
+    const lookupFX2 = new Map();
 
     // Function to add image paths for both folders
-    function add(img, keys) {
-      for (const k of keys) lookup.set(norm(k), img);
+    function addToDsimobo(img, keys) {
+      for (const k of keys) lookupDsimobo.set(norm(k), img);
+    }
+
+    function addToFX2(img, keys) {
+      for (const k of keys) lookupFX2.set(norm(k), img);
     }
 
     // Adding images to the lookup table for both folders (dsimobo and FX2)
-    add("dsimobo/1.jpg", [""]);
-    add("FX2/1.jpg", [""]);
+    addToDsimobo("dsimobo/1.jpg", [""]);
+    addToFX2("FX2/1.jpg", [""]);
 
     // Adding more image mappings for dsimobo and FX2
-    add("dsimobo/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
-    add("FX2/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
-    add("dsimobo/3.jpg", ["LS", "PIN_66", "CN2-31"]);
-    add("FX2/3.jpg", ["LS", "PIN_66", "CN2-31"]);
-    add("dsimobo/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
-    add("FX2/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
+    addToDsimobo("dsimobo/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
+    addToFX2("FX2/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
+    addToDsimobo("dsimobo/3.jpg", ["LS", "PIN_66", "CN2-31"]);
+    addToFX2("FX2/3.jpg", ["LS", "PIN_66", "CN2-31"]);
+    addToDsimobo("dsimobo/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
+    addToFX2("FX2/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
 
     const seq = [
       ["LCDB10", "PIN_44", "CN2-15"],
@@ -205,8 +210,8 @@
     for (const [label, pin, cn] of seq) {
       const img = `dsimobo/${imgNum}.jpg`;
       const fx2Img = `FX2/${imgNum}.jpg`;
-      add(img, [label, pin, cn]);
-      add(fx2Img, [label, pin, cn]);
+      addToDsimobo(img, [label, pin, cn]);
+      addToFX2(fx2Img, [label, pin, cn]);
       imgNum++;
     }
 
@@ -237,8 +242,8 @@
 
     function update() {
       const key = norm(input.value);
-      const img = lookup.get(key) || "dsimobo/1.jpg";
-      const fx2Img = lookup.get(key.replace('dsimobo', 'FX2')) || "FX2/1.jpg";
+      const img = lookupDsimobo.get(key) || "dsimobo/1.jpg";
+      const fx2Img = lookupFX2.get(key) || "FX2/1.jpg";
 
       resultImg.setAttribute("data-attempted", img);
       resultImg.src = img;
