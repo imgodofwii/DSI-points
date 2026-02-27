@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pin → Image Lookup</title>
+  <style>
+    :root { --gap: 14px; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      display: flex;
+      gap: var(--gap);
+      padding: var(--gap);
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .left {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .right {
+      width: 32vw;
+      max-width: 380px;
+      border-left: 1px solid #e5e5e5;
+      padding-left: var(--gap);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: var(--gap);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #cfcfcf;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .hint {
+      color: #666;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .imgbox {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      gap: 8px;
+    }
+
+    .imgbox img {
+      max-width: 100%;
+      max-height: 73vh;
+      height: auto;
+      width: auto;
+      border-radius: 10px;
+      border: 1px solid #e5e5e5;
+      background: #fff;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #444;
+      padding: 6px 10px;
+      border: 1px solid #e5e5e5;
+      border-radius: 999px;
+      background: #fafafa;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status.err {
+      color: #8a1f1f;
+      border-color: #f0c2c2;
+      background: #fff5f5;
+    }
+
+    .right img {
+      max-width: 100%;
+      max-height: 90vh;
+      height: auto;
+      width: auto;
+      border-radius: 10px;
+      border: 1px solid #e5e5e5;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="left">
+      <div class="card">
+        <label for="q">Type solder point here:</label>
+        <input id="q" type="text" placeholder="Type solder point here" autocomplete="off" />
+        <div class="hint">
+          Not case sensitive. "_" and "-" are optional (e.g. CN2-29, CN2 29, CN229 all work).
+        </div>
+      </div>
+
+      <div class="imgbox">
+        <img id="resultImg" src="1.jpg" alt="Result" />
+        <div id="status" class="status">Showing: 1.jpg</div>
+      </div>
+    </main>
+
+    <aside class="right">
+      <img src="偽トロi配線.png" alt="Wiring chart (reference)" />
+    </aside>
+  </div>
+
+  <script>
+    function norm(s) {
+      return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    }
+
+    // Lookup table: normalized_key -> image filename
+    const lookup = new Map();
+
+    function add(img, keys) {
+      for (const k of keys) lookup.set(norm(k), img);
+    }
+
+    // Fixed per your rules:
+    add("2.jpg", ["DLK","DCLK","PIN_62","CN2-29"]);
+    add("3.jpg", ["LS","PIN_66","CN2-31"]);
+    add("4.jpg", ["GSP","PIN_67","CN2-32"]);
+
+    // Sequential rows (start at 5.jpg)
+    const seq = [
+      ["LCDB10", "PIN_44", "CN2-15"],
+      ["LCDB11", "PIN_47", "CN2-16"],
+      ["LCDB12", "PIN_48", "CN2-17"],
+      ["LCDB13", "PIN_49", "CN2-18"],
+      ["LCDB14", "PIN_50", "CN2-19"],
+      ["LCDB15", "PIN_51", "CN2-20"],
+      ["LCDR10", "PIN_52", "CN2-21"],
+      ["LCDR11", "PIN_53", "CN2-22"],
+      ["LCDR12", "PIN_54", "CN2-23"],
+      ["LCDR13", "PIN_55", "CN2-24"],
+      ["LCDR14", "PIN_56", "CN2-25"],
+      ["LCDR15", "PIN_57", "CN2-26"],
+      ["LCDG10", "PIN_70", "CN2-35"],
+      ["LCDG11", "PIN_71", "CN2-36"],
+      ["LCDG12", "PIN_72", "CN2-37"],
+      ["LCDG13", "PIN_73", "CN2-38"],
+      ["LCDG14", "PIN_74", "CN2-39"],
+      ["LCDG15", "PIN_75", "CN2-40"],
+
+      ["LCDB20", "PIN_99", "CN1-23"],
+      ["LCDB21", "PIN_98", "CN1-24"],
+      ["LCDB22", "PIN_97", "CN1-25"],
+      ["LCDB23", "PIN_96", "CN1-26"],
+      ["LCDB24", "PIN_95", "CN1-27"],
+      ["LCDB25", "PIN_92", "CN1-28"],
+      ["LCDR20", "PIN_91", "CN1-29"],
+      ["LCDR21", "PIN_89", "CN1-30"],
+      ["LCDR22", "PIN_87", "CN1-31"],
+      ["LCDR23", "PIN_86", "CN1-32"],
+      ["LCDR24", "PIN_85", "CN1-33"],
+      ["LCDR25", "PIN_84", "CN1-34"],
+      ["LCDG20", "PIN_83", "CN1-35"],
+      ["LCDG21", "PIN_82", "CN1-36"],
+      ["LCDG22", "PIN_81", "CN1-37"],
+      ["LCDG23", "PIN_78", "CN1-38"],
+      ["LCDG24", "PIN_77", "CN1-39"],
+      ["LCDG25", "PIN_76", "CN1-40"],
+
+      ["SND_MCLK", "PIN_64", "CN2-30"],
+      ["SND_SDO",  "PIN_61", "CN2-28"],
+      ["SND_WS",   "PIN_58", "CN2-27"],
+      ["TOSLINK",  "PIN_41", "CN2-12"]
+    ];
+
+    let imgNum = 5;
+    for (const [label, pin, cn] of seq) {
+      const img = `${imgNum}.jpg`;
+      add(img, [
+        label,
+        pin,                 // PIN_44
+        pin.replace(/_/g,""),// PIN44
+        cn,                  // CN2-15
+        cn.replace(/[- ]/g,"")// CN215
+      ]);
+      imgNum++;
+    }
+
+    const input = document.getElementById("q");
+    const resultImg = document.getElementById("resultImg");
+    const status = document.getElementById("status");
+
+    function setStatus(text, isErr) {
+      status.textContent = text;
+      status.classList.toggle("err", !!isErr);
+    }
+
+    // If an image filename doesn't exist, show it clearly and fall back.
+    resultImg.addEventListener("error", () => {
+      const attempted = resultImg.getAttribute("data-attempted") || resultImg.src;
+      setStatus(`Missing file: ${attempted} (check repo filenames)`, true);
+      resultImg.src = "1.jpg";
+      resultImg.setAttribute("data-attempted", "");
+    });
+
+    function update() {
+      const key = norm(input.value);
+      const img = lookup.get(key) || "1.jpg";
+      resultImg.setAttribute("data-attempted", img);
+      resultImg.src = img;
+      setStatus(`Showing: ${img}`, false);
+    }
+
+    input.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
