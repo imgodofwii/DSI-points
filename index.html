@@ -149,6 +149,10 @@
     // Lookup table: normalized_key -> image filename
     const lookup = new Map();
 
+    add("dsimobo/kenny.jpg", ["kenny"]);
+
+
+
     function add(img, keys) {
       for (const k of keys) lookup.set(norm(k), img);
     }
