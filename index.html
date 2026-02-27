@@ -165,7 +165,7 @@
     // Lookup table: normalized_key -> image filename
     const lookup = new Map();
 
-    // Function to add images to the lookup table
+    // Function to add image paths for both folders (dsimobo and FX2)
     function add(img, keys) {
       for (const k of keys) lookup.set(norm(k), img);
     }
@@ -174,7 +174,7 @@
     add("dsimobo/kenny.jpg", ["kenny"]);
     add("FX2/kenny.jpg", ["kenny"]);
 
-    // Adding more image mappings
+    // Adding more image mappings for dsimobo and FX2
     add("dsimobo/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
     add("FX2/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
     add("dsimobo/3.jpg", ["LS", "PIN_66", "CN2-31"]);
@@ -182,7 +182,6 @@
     add("dsimobo/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
     add("FX2/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
 
-    // Sequential rows (start at 5.jpg)
     const seq = [
       ["LCDB10", "PIN_44", "CN2-15"],
       ["LCDB11", "PIN_47", "CN2-16"],
