@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pin → Image Lookup</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
   <style>
     :root { --gap: 14px; }
     body {
@@ -129,7 +131,7 @@
       </div>
 
       <div class="imgbox">
-        <img id="resultImg" src="1.jpg" alt="Result" />
+        <img id="resultImg" src="dsimobo/1.jpg" alt="Result" />
         <div id="status" class="status">Showing: 1.jpg</div>
       </div>
     </main>
@@ -152,9 +154,9 @@
     }
 
     // Fixed per your rules:
-    add("2.jpg", ["DLK","DCLK","PIN_62","CN2-29"]);
-    add("3.jpg", ["LS","PIN_66","CN2-31"]);
-    add("4.jpg", ["GSP","PIN_67","CN2-32"]);
+    add("dsimobo/2.jpg", ["DLK","DCLK","PIN_62","CN2-29"]);
+    add("dsimobo/3.jpg", ["LS","PIN_66","CN2-31"]);
+    add("dsimobo/4.jpg", ["GSP","PIN_67","CN2-32"]);
 
     // Sequential rows (start at 5.jpg)
     const seq = [
@@ -204,7 +206,7 @@
 
     let imgNum = 5;
     for (const [label, pin, cn] of seq) {
-      const img = `${imgNum}.jpg`;
+      const img = `dsimobo/${imgNum}.jpg`;
       add(img, [
         label,
         pin,                 // PIN_44
@@ -228,13 +230,13 @@
     resultImg.addEventListener("error", () => {
       const attempted = resultImg.getAttribute("data-attempted") || resultImg.src;
       setStatus(`Missing file: ${attempted} (check repo filenames)`, true);
-      resultImg.src = "1.jpg";
+      resultImg.src = "dsimobo/1.jpg";
       resultImg.setAttribute("data-attempted", "");
     });
 
     function update() {
       const key = norm(input.value);
-      const img = lookup.get(key) || "1.jpg";
+      const img = lookup.get(key) || "dsimobo/1.jpg";
       resultImg.setAttribute("data-attempted", img);
       resultImg.src = img;
       setStatus(`Showing: ${img}`, false);
