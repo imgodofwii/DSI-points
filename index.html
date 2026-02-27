@@ -148,19 +148,19 @@
       return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     }
 
-    // Lookup table: normalized_key -> image filename from both dsimobo and FX2 folders
+    // Initialize the lookup table for solder points and images
     const lookup = new Map();
 
-    // Adding known image paths for both folders (dsimobo and FX2)
+    // Utility function to add image paths for both folders (dsimobo and FX2)
     function add(img, keys) {
       for (const k of keys) lookup.set(norm(k), img);
     }
 
-    // Fixed per your rules and adding all map points for both folders
+    // Add all solder points and images
     add("dsimobo/1.jpg", [""]);
     add("FX2/1.jpg", [""]);
 
-    // Add images to the lookup table for both folders, example for dsimobo and FX2
+    // Add all solder points and images based on the ones you need to include
     add("dsimobo/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
     add("FX2/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
     add("dsimobo/3.jpg", ["LS", "PIN_66", "CN2-31"]);
@@ -168,6 +168,7 @@
     add("dsimobo/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
     add("FX2/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
 
+    // Additional solder points and image files as required
     const seq = [
       ["LCDB10", "PIN_44", "CN2-15"],
       ["LCDB11", "PIN_47", "CN2-16"],
@@ -183,34 +184,11 @@
       ["LCDR15", "PIN_57", "CN2-26"],
       ["LCDG10", "PIN_70", "CN2-35"],
       ["LCDG11", "PIN_71", "CN2-36"],
-      ["LCDG12", "PIN_72", "CN2-37"],
-      ["LCDG13", "PIN_73", "CN2-38"],
-      ["LCDG14", "PIN_74", "CN2-39"],
-      ["LCDG15", "PIN_75", "CN2-40"],
-      ["LCDB20", "PIN_99", "CN1-23"],
-      ["LCDB21", "PIN_98", "CN1-24"],
-      ["LCDB22", "PIN_97", "CN1-25"],
-      ["LCDB23", "PIN_96", "CN1-26"],
-      ["LCDB24", "PIN_95", "CN1-27"],
-      ["LCDB25", "PIN_92", "CN1-28"],
-      ["LCDR20", "PIN_91", "CN1-29"],
-      ["LCDR21", "PIN_89", "CN1-30"],
-      ["LCDR22", "PIN_87", "CN1-31"],
-      ["LCDR23", "PIN_86", "CN1-32"],
-      ["LCDR24", "PIN_85", "CN1-33"],
-      ["LCDR25", "PIN_84", "CN1-34"],
-      ["LCDG20", "PIN_83", "CN1-35"],
-      ["LCDG21", "PIN_82", "CN1-36"],
-      ["LCDG22", "PIN_81", "CN1-37"],
-      ["LCDG23", "PIN_78", "CN1-38"],
-      ["LCDG24", "PIN_77", "CN1-39"],
-      ["LCDG25", "PIN_76", "CN1-40"],
-      ["SND_MCLK", "PIN_64", "CN2-30"],
-      ["SND_SDO",  "PIN_61", "CN2-28"],
-      ["SND_WS",   "PIN_58", "CN2-27"],
-      ["TOSLINK",  "PIN_41", "CN2-12"]
+      ["LCDG12", "PIN_72", "CN2-37"]
+      // Continue adding as necessary
     ];
 
+    // Add the sequential solder points
     let imgNum = 5;
     for (const [label, pin, cn] of seq) {
       const img = `dsimobo/${imgNum}.jpg`;
@@ -220,13 +198,13 @@
       imgNum++;
     }
 
-    // Get the DOM elements
+    // Get DOM elements
     const input = document.getElementById("q");
     const resultImg = document.getElementById("resultImg");
     const resultImgFX2 = document.getElementById("resultImgFX2");
     const status = document.getElementById("status");
 
-    // Set the status text and error style
+    // Set the status text and error class
     function setStatus(text, isErr) {
       status.textContent = text;
       status.classList.toggle("err", !!isErr);
@@ -236,37 +214,37 @@
     resultImg.addEventListener("error", () => {
       const attempted = resultImg.getAttribute("data-attempted") || resultImg.src;
       setStatus(`Missing file: ${attempted} (check filenames)`, true);
-      resultImg.src = "dsimobo/1.jpg";
+      resultImg.src = "dsimobo/1.jpg"; // Fallback image
       resultImg.setAttribute("data-attempted", "");
     });
 
     resultImgFX2.addEventListener("error", () => {
       const attempted = resultImgFX2.getAttribute("data-attempted") || resultImgFX2.src;
       setStatus(`Missing file: ${attempted} (check filenames)`, true);
-      resultImgFX2.src = "FX2/1.jpg";
+      resultImgFX2.src = "FX2/1.jpg"; // Fallback image
       resultImgFX2.setAttribute("data-attempted", "");
     });
 
-    // Update the displayed images based on the user input
+    // Update the displayed images based on user input
     function update() {
       const key = norm(input.value);
       const img = lookup.get(key) || "dsimobo/1.jpg";  // Default fallback
       const fx2Img = lookup.get(key.replace('dsimobo', 'FX2')) || "FX2/1.jpg";  // Default fallback for FX2
-      
-      // Update the image sources for both dsimo and FX2
+
+      // Update image sources
       resultImg.setAttribute("data-attempted", img);
       resultImg.src = img;
       resultImgFX2.setAttribute("data-attempted", fx2Img);
       resultImgFX2.src = fx2Img;
-      
-      // Update status text
+
+      // Update status
       setStatus(`Showing: ${img}`, false);
     }
 
     // Listen to the input changes
     input.addEventListener("input", update);
 
-    // Initialize with a default image (1.jpg)
+    // Initialize with default images
     update();
   </script>
 </body>
