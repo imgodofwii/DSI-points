@@ -258,15 +258,18 @@
       const key = norm(input.value);
       const img = lookup.get(key) || "dsimobo/1.jpg";
       const fx2Img = lookup.get(key.replace('dsimobo', 'FX2')) || "FX2/1.jpg";
+      
+      // Update the image sources for both dsimo and FX2
       resultImg.setAttribute("data-attempted", img);
       resultImg.src = img;
       resultImgFX2.setAttribute("data-attempted", fx2Img);
       resultImgFX2.src = fx2Img;
+      
       setStatus(`Showing: ${img}`, false);
     }
 
     input.addEventListener("input", update);
     update();
-  </script>
+</script>
 </body>
 </html>
