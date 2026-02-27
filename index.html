@@ -1,174 +1,27 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pin → Image Lookup</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-
-  <style>
-    :root { --gap: 14px; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow-x: hidden;
-    }
-
-    .wrap {
-      display: flex;
-      gap: var(--gap);
-      padding: var(--gap);
-      height: 100vh;
-      box-sizing: border-box;
-    }
-
-    .left {
-      flex: 1;
-      min-width: 280px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .right {
-      width: 32vw;
-      max-width: 380px;
-      border-left: 1px solid #e5e5e5;
-      padding-left: var(--gap);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card {
-      border: 1px solid #e5e5e5;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: var(--gap);
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 10px;
-      font-size: 15px;
-      border: 1px solid #cfcfcf;
-      border-radius: 8px;
-      outline: none;
-    }
-
-    .hint {
-      color: #666;
-      font-size: 12px;
-      margin-top: 6px;
-    }
-
-    .imgbox {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      gap: 8px;
-    }
-
-    .imgbox img {
-      max-width: 100%;
-      max-height: 73vh;
-      height: auto;
-      width: auto;
-      border-radius: 10px;
-      border: 1px solid #e5e5e5;
-      background: #fff;
-    }
-
-    .status {
-      font-size: 12px;
-      color: #444;
-      padding: 6px 10px;
-      border: 1px solid #e5e5e5;
-      border-radius: 999px;
-      background: #fafafa;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .status.err {
-      color: #8a1f1f;
-      border-color: #f0c2c2;
-      background: #fff5f5;
-    }
-
-    .right img {
-      max-width: 100%;
-      max-height: 90vh;
-      height: auto;
-      width: auto;
-      border-radius: 10px;
-      border: 1px solid #e5e5e5;
-      background: #fff;
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <main class="left">
-      <div class="card">
-        <label for="q">Type solder point here:</label>
-        <input id="q" type="text" placeholder="Type solder point here" autocomplete="off" />
-        <div class="hint">
-          Not case sensitive. "_" and "-" are optional (e.g. CN2-29, CN2 29, CN229 all work).
-        </div>
-      </div>
-
-      <div class="imgbox">
-        <img id="dsimoboImg" src="dsimobo/1.jpg" alt="dsimobo Result" />
-        <div id="status" class="status">Showing: 1.jpg</div>
-      </div>
-    </main>
-
-    <aside class="right">
-      <!-- This will display the FX2 images, as requested -->
-      <img id="fx2Img" src="FX2/1.jpg" alt="FX2 Result" />
-      <!-- This is the existing wiring chart image -->
-      <img src="偽トロi配線.png" alt="Wiring chart (reference)" />
-    </aside>
-  </div>
-
-  <script>
+<script>
     function norm(s) {
       return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     }
 
-    // Lookup table: normalized_key -> image filename
+    // Lookup table: normalized_key -> image filenames
     const lookup = new Map();
 
+    // Adding image paths for both folders (dsimobo and FX2)
     add("dsimobo/kenny.jpg", ["kenny"]);
     add("FX2/kenny.jpg", ["kenny"]);
 
-    function add(img, keys) {
-      for (const k of keys) lookup.set(norm(k), img);
+    function add(img1, keys) {
+      for (const k of keys) lookup.set(norm(k), img1);
     }
 
     // Fixed per your rules:
-    add("dsimobo/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
-    add("FX2/2.jpg", ["DLK", "DCLK", "PIN_62", "CN2-29"]);
-    add("dsimobo/3.jpg", ["LS", "PIN_66", "CN2-31"]);
-    add("FX2/3.jpg", ["LS", "PIN_66", "CN2-31"]);
-    add("dsimobo/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
-    add("FX2/4.jpg", ["GSP", "PIN_67", "CN2-32"]);
+    add("dsimobo/2.jpg", ["DLK","DCLK","PIN_62","CN2-29"]);
+    add("FX2/2.jpg", ["DLK","DCLK","PIN_62","CN2-29"]);
+    add("dsimobo/3.jpg", ["LS","PIN_66","CN2-31"]);
+    add("FX2/3.jpg", ["LS","PIN_66","CN2-31"]);
+    add("dsimobo/4.jpg", ["GSP","PIN_67","CN2-32"]);
+    add("FX2/4.jpg", ["GSP","PIN_67","CN2-32"]);
 
-    // Sequential rows (start at 5.jpg)
     const seq = [
       ["LCDB10", "PIN_44", "CN2-15"],
       ["LCDB11", "PIN_47", "CN2-16"],
@@ -188,7 +41,6 @@
       ["LCDG13", "PIN_73", "CN2-38"],
       ["LCDG14", "PIN_74", "CN2-39"],
       ["LCDG15", "PIN_75", "CN2-40"],
-
       ["LCDB20", "PIN_99", "CN1-23"],
       ["LCDB21", "PIN_98", "CN1-24"],
       ["LCDB22", "PIN_97", "CN1-25"],
@@ -207,7 +59,6 @@
       ["LCDG23", "PIN_78", "CN1-38"],
       ["LCDG24", "PIN_77", "CN1-39"],
       ["LCDG25", "PIN_76", "CN1-40"],
-
       ["SND_MCLK", "PIN_64", "CN2-30"],
       ["SND_SDO",  "PIN_61", "CN2-28"],
       ["SND_WS",   "PIN_58", "CN2-27"],
@@ -216,16 +67,33 @@
 
     let imgNum = 5;
     for (const [label, pin, cn] of seq) {
-      const imgDsimobo = `dsimobo/${imgNum}.jpg`;
-      const imgFx2 = `FX2/${imgNum}.jpg`;
-      add(imgDsimobo, [label, pin, cn]);
-      add(imgFx2, [label, pin, cn]);
+      const img = `dsimobo/${imgNum}.jpg`;
+      const fx2Img = `FX2/${imgNum}.jpg`;
+      add(img, [
+        label,
+        pin,
+        pin.replace(/_/g,""),
+        cn,
+        cn.replace(/[- ]/g,"")
+      ]);
+      add(fx2Img, [
+        label,
+        pin,
+        pin.replace(/_/g,""),
+        cn,
+        cn.replace(/[- ]/g,"")
+      ]);
       imgNum++;
     }
 
     const input = document.getElementById("q");
-    const dsimoboImg = document.getElementById("dsimoboImg");
-    const fx2Img = document.getElementById("fx2Img");
+    const resultImg = document.getElementById("resultImg");
+    const resultImgFX2 = document.createElement("img");
+    resultImgFX2.style.maxWidth = "100%";
+    resultImgFX2.style.maxHeight = "90vh";
+    resultImgFX2.style.height = "auto";
+    resultImgFX2.style.width = "auto";
+    document.querySelector('.imgbox').appendChild(resultImgFX2);
     const status = document.getElementById("status");
 
     function setStatus(text, isErr) {
@@ -233,34 +101,31 @@
       status.classList.toggle("err", !!isErr);
     }
 
-    // If an image filename doesn't exist, show it clearly and fall back.
-    dsimoboImg.addEventListener("error", () => {
-      const attempted = dsimoboImg.getAttribute("data-attempted") || dsimoboImg.src;
+    resultImg.addEventListener("error", () => {
+      const attempted = resultImg.getAttribute("data-attempted") || resultImg.src;
       setStatus(`Missing file: ${attempted} (check repo filenames)`, true);
-      dsimoboImg.src = "dsimobo/1.jpg";
-      dsimoboImg.setAttribute("data-attempted", "");
+      resultImg.src = "dsimobo/1.jpg";
+      resultImg.setAttribute("data-attempted", "");
     });
 
-    fx2Img.addEventListener("error", () => {
-      const attempted = fx2Img.getAttribute("data-attempted") || fx2Img.src;
+    resultImgFX2.addEventListener("error", () => {
+      const attempted = resultImgFX2.getAttribute("data-attempted") || resultImgFX2.src;
       setStatus(`Missing file: ${attempted} (check repo filenames)`, true);
-      fx2Img.src = "FX2/1.jpg";
-      fx2Img.setAttribute("data-attempted", "");
+      resultImgFX2.src = "FX2/1.jpg";
+      resultImgFX2.setAttribute("data-attempted", "");
     });
 
     function update() {
       const key = norm(input.value);
-      const imgDsimobo = lookup.get(key) || "dsimobo/1.jpg";
-      const imgFx2 = lookup.get(key) || "FX2/1.jpg";
-      dsimoboImg.setAttribute("data-attempted", imgDsimobo);
-      fx2Img.setAttribute("data-attempted", imgFx2);
-      dsimoboImg.src = imgDsimobo;
-      fx2Img.src = imgFx2;
-      setStatus(`Showing: ${imgDsimobo}`, false);
+      const img = lookup.get(key) || "dsimobo/1.jpg";
+      const fx2Img = lookup.get(key.replace('dsimobo', 'FX2')) || "FX2/1.jpg";
+      resultImg.setAttribute("data-attempted", img);
+      resultImg.src = img;
+      resultImgFX2.setAttribute("data-attempted", fx2Img);
+      resultImgFX2.src = fx2Img;
+      setStatus(`Showing: ${img}`, false);
     }
 
     input.addEventListener("input", update);
     update();
-  </script>
-</body>
-</html>
+</script>
